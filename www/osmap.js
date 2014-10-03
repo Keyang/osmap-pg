@@ -17,7 +17,7 @@ module.exports = {
 
 function _exec(action, options, succb, failcb) {
   if (cordova && cordova.exec) {
-    cordova.exec(successcb, failcb, "OSMap", action, [options]);
+    cordova.exec(succb, failcb, "OSMap", action, [options]);
   } else {
     failcb("Cordova is not ready.");
   }

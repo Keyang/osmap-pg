@@ -1,16 +1,23 @@
-package com.feedhenry.osmap-phonegap
+package com.feedhenry.phonegap;
 
 import org.apache.cordova.*;
 import org.json.*;
-
-public class OSMap extends CordovaPlugin{
-  
-  public OSMap{
-
-  }
+import uk.co.spargonet.osofflinemapping.*;
+import uk.co.ordnancesurvey.android.maps.MapTile;
+import uk.co.ordnancesurvey.android.maps.TileFetcherDelegate;
+import android.os.Environment;
+import java.io.File;
+import android.graphics.Bitmap;
+import android.util.Log;
+public class OSMap extends CordovaPlugin implements TileFetcherDelegate{
+  private final static String DB_NAME = "/mapdata.ostiles";    
+  private SpargonetTileFetcher tileFetcher;
   public void initialize(CordovaInterface cordova, CordovaWebView webView){
     super.initialize(cordova, webView);
-    //More initialisation
+    Log.i("osmap","start to init tilefetcher");
+    File path = Environment.getExternalStorageDirectory();
+    tileFetcher=new SpargonetTileFetcher(cordova.getActivity(),this,path.getPath()+DB_NAME);
+    Log.i("osmap","tilefetcher initialised: "+path.getPath()+DB_NAME);
   }
 
   /**
@@ -28,9 +35,19 @@ public class OSMap extends CordovaPlugin{
     } 
     return false;
   }
-  private void getMapTile(JSONArry args, CallbackContext callbackContext){
-    JSONObject r=new JSONObject();
-    r.put("hello","world");
-    callbackContext.success(r);
+  private void getMapTile(JSONArray args, CallbackContext callbackContext) throws JSONException {
+        JSONObject r=new JSONObject();
+        JSONObject options=args.getJSONObject(0);
+        int x=options.getInt("x");
+        int y=options.getInt("y");
+        String z=options.getString("z");
+        String stringBase64ForTile = tileFetcher.requestBase64ForTile(x, y, z);
+        r.put("img",stringBase64ForTile);
+        callbackContext.success(r);
+    }
+  @Override
+  public void tileReadyAsyncCallback(MapTile tile, Bitmap bmp) {
+	// TODO Auto-generated method stub
+
   }
 }
