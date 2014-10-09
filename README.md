@@ -8,12 +8,13 @@ This plugin connects to a native implenetation which reads map tiles from a sqli
 * Leafletjs Tile plugin 
 
 #Build 
+For plugin developers, there is a build-www.py python script to build and generate production version of the plugin.
 
 
 #Installation
 To install the plugin, goto cordova project root folder and run 
 ```bash
-cordova plugins add [path to plugin]
+cordova plugins add https://github.com/Keyang/osmap-pg.git
 ```
 The installation will do the following:
 
@@ -67,7 +68,7 @@ osmap is an object attached to browser's window object. It has following functio
  Get a map tile from PhoneGap plugin returninng base64 encoded PNG image
 
   params:
-```json
+```
   options:{
    x:int, x coord
    y:int, y coord 
